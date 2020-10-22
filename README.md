@@ -1,4 +1,4 @@
-1. Digital Signal Processing - 1 Project
+1. (Digital Signal Processing - 1) Project
 
 2. Done during the duration of the Fall Semester 2018
 
