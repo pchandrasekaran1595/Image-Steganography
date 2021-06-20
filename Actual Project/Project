@@ -1,0 +1,160 @@
+# SCRIPT THAT ACTS AS A MASTER OVER THE ENTIRE PROJECT IMPLEMENTATION. CAN BE CONSIDERED THE "main()" OF THE PROJECT.
+
+from Crypto.Cipher import AES
+import codecs, subprocess, base64, time, string, random, sys
+
+# ENCRYPTION SETUP
+random.seed(9050)
+blockSize = 16
+IV_Size = 16
+aesKey = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(16))
+IV = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(16))
+mode = AES.MODE_CBC
+minTime = 0.05
+
+print("\n\n*------------------ DSP PROJECT - STEGANOGRAPHY ------------------*\n\n")
+firstChoice = input("\n\n1. User Input  \n\n2. Text File\n\n3. Image File\n\nEnter 1 or 2 or 3 : ")
+
+if firstChoice==1:
+    uiChoice = input("\n\n\n1. Insert Data into Image  \n\n2. Extract Data from Image\n\nEnter 1 or 2 : ")
+    if uiChoice==1:
+        inputMsg = raw_input("\n\nEnter the data : ")
+        cp = base64.b64encode(inputMsg);
+        with codecs.open("2 - PyTxData.txt", 'w+') as fout:
+            fout.write(cp)
+        fout.close()
+
+        print("\n\nCompiling Java Program.....")
+        cmdCmp = 'javac Project.java'
+        procCmp = subprocess.Popen(cmdCmp)
+    
+        secondChoice = raw_input("\n\nPerform Image Processing? (Y,N)                    : ")
+        if secondChoice=="Y" or secondChoice=="y":
+            cmd = 'java Project'
+            print("\n\nRunning Image Processing Program.....")
+            procRun = subprocess.Popen(cmd)
+            time.sleep(minTime)
+            while(procRun.poll() == None):
+                time.sleep(minTime)
+            sys.exit()
+                
+    elif uiChoice==2:
+        print("\n\nExtracting Data from the Image.....")
+        fin = open("3 - JaRxData.txt","r")
+        RecMsg = fin.read()
+        fin.close()
+        print("\n\nRecovered Data                         : " + base64.b64decode(RecMsg))
+
+    else:
+        print("\n\n----- Incorrect Choice -----")
+        print("\n------- Terminating --------")
+        sys.exit()
+    
+    
+elif firstChoice==2:
+    # READING THE DATA FILE
+    fin = open("1 - Basic Data.txt", 'r')
+    msg = fin.read()
+    fin.close();
+
+
+    # REMOVING THE ADDITIONAL CHARACTERS UTF-8 FILE FORMAT ADDS TO THE BEGINNING OF THE FILE
+    msg = msg[3:]
+
+
+    # PADDING THE MESSAGE TO BE A MULTIPLE OF 16 (AES BLOCK SIZE)
+    paddingChar = 65
+    msgLen = len(msg)
+    padReq = blockSize - (msgLen % blockSize)
+    msg += chr(paddingChar)*padReq
+
+
+    #---------CRYPTO SECURE---------#
+    #aesKey = Random.new().read(blockSize)
+    #IV = Random.new().read(IV_Size)
+    #aesKey = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(16))  
+    #IV = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(16))
+    #-------------------------------#
+
+    choice = input("\n\n\n1. Encryption \n\n2. Decryption\n\nEnter 1 or 2 : ")
+    if choice==1:
+    
+        print("\nInput Message          : " + msg[0:msgLen])
+        print("\n\nPadded Input Message   : " + msg[0:len(msg)])
+
+        #1. ENCRYPTING THE BASIC DATA AND WRITING IT TO A FILE
+        #2. CALLING THE JAVA PROGRAM THAT OPERATES ON THIS FILE OF ENCRYPTED DATA TO HIDE IT INTO THE IMAGE
+
+        print("\n\nCompiling Java Program.....")
+        cmdCmp = 'javac Project.java'
+        procCmp = subprocess.Popen(cmdCmp)
+
+        ans = raw_input("\n\nPerform Encryption? (Y,N) : ")
+        if ans=="Y" or ans=="y":
+            encryptor = AES.new(aesKey, mode, IV)
+            ciphertext = encryptor.encrypt(msg)
+            cp = base64.b64encode(ciphertext);
+            print("\n\nCiphertext       : " + cp)
+            with codecs.open("2 - PyTxData.txt", 'w+') as fout:
+                fout.write(cp)
+            fout.close()
+            cmd = 'java Project'
+            print("\n\nRunning Image Processing Program.....")
+            procRun = subprocess.Popen(cmd)
+            time.sleep(minTime)
+            while(procRun.poll() == None):
+                time.sleep(minTime)
+            sys.exit()
+        else:
+            print("\n\n----- Incorrect Choice -----")
+            print("\n------- Terminating --------")
+            sys.exit()
+        
+#---------------------------------------------------------------------------------------------------------
+
+    # DECRYPTING THE DATA EXTRACTED FROM THE IMAGE
+    elif choice==2:
+        ans = raw_input("\n\nPerform Decryption? (Y,N)                    : ")
+        if ans=="Y" or ans=="y":
+            print("\n\nReading Encrypted Data Extracted from the Image.....")
+            fin = open("3 - JaRxData.txt","r")
+            RecMsg = fin.read()
+            fin.close()
+            RecMsg = base64.b64decode(RecMsg)
+            decryptor = AES.new(aesKey, mode, IV)
+            plaintext = decryptor.decrypt(RecMsg)
+            print("\n\nRecovered Plaintext              : " + plaintext)
+            plaintext_WOPAD = plaintext[0:msgLen]
+            print("\n\nRecovered Plaintext W/O Padding  : " + plaintext_WOPAD)
+            with codecs.open("4 - Recovered Decrypted Data.txt", 'w+') as fout:
+                fout.write(plaintext_WOPAD)
+            fout.close()
+        else:
+            print("\n\n----- Incorrect Choice -----")
+            print("\n------- Terminating --------")
+            sys.exit()
+
+    else:
+        print("\n\n----- Incorrect Choice -----")
+        print("\n------- Terminating --------")
+        sys.exit()
+
+elif firstChoice==3:
+    runTimeExecBuff = 25
+    print("\n\nCompiling Java Program.....")
+    cmdCmp = 'javac ProjectExtension.java'
+    procCmp = subprocess.Popen(cmdCmp)
+    
+    secondChoice = raw_input("\n\nPerform Image Processing? (Y,N)                    : ")
+    if secondChoice=="Y" or secondChoice=="y":
+        cmd = 'java ProjectExtension'
+        print("\n\nRunning Image Processing Program.....")
+        procRun = subprocess.Popen(cmd);
+        time.sleep(minTime)
+        while(procRun.poll() == None):
+            time.sleep(minTime)
+        sys.exit()
+
+else:
+    print("\n\n----- Incorrect Choice -----")
+    print("\n------- Terminating --------")
