@@ -1,9 +1,0 @@
-1. The user is a given a choice to use one of the three input methods : User Input, A Text file or an Image File.
-
-2. If the user chooses the User Input, he/she can either insert or extract data from an image. To insert the data, the user is prompted to type in the data after which it shall be encoded into the image. A new image file is generated containing the data. Extraction of data is performed as and when the user gives the appropriate input by comparison of the new image file with the original image file.
-
-3. If the user chooses the Text File, he/she must copy whatever data that needs to be hidden into the said text file. This data will then be AES-128 encrypted before it is encoded into the pixels of the source image. Again, a new image file is generated containing the data.
-
-4. To extract this data, the new image file is compared with the old image file. The recovered data is then put into a file after which it is decrypted to give the original data.
-
-5. If the user chooses the Image File, he/she must enter the name of the image to be hidden along with the source image to hide it into. This image is then broken down into its pixel values, encrypted and then encoded into the pixels of the source image. Again, a new image file is generated containing the data. Extraction of the image is performed by comparing the original image file with the newly generated source image file. The recovered pixel values are then put onto a blank canvas to, in essence, paint back the picture that was hidden.
