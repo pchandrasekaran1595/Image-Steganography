@@ -56,7 +56,14 @@ def app():
     else:
         if hide:
             S.do_steganography(channel=channel)
+            utils.breaker()
+            print("Completed")
+            utils.breaker()
         
         if recover:
             image = cv2.cvtColor(src=cv2.imread(os.path.join(utils.PATH, "S-{}.png".format(name[:-4])), cv2.IMREAD_COLOR), code=cv2.COLOR_BGR2RGB)
             S.recover(image=image, quotients=np.load(os.path.join(utils.PATH, "Q-{}.npy".format(name[:-4]))), channel=channel)
+            utils.breaker()
+            print("Recovered")
+            utils.breaker()
+        
