@@ -7,8 +7,8 @@ echo *        Exe Builder         *
 echo ******************************
 echo.
 
-echo pyinstaller main.py --clean --onefile --icon icon.ico --name SteganographyApp --distpath "./" --noconsole --log-level=DEBUG
-pyinstaller main.py --clean --onefile --icon icon.ico --name SteganographyApp --distpath "./" --noconsole --log-level=DEBUG
+echo pyinstaller main.py --clean --onefile --icon icon.ico --name SteganographyApp --distpath "./" --log-level=DEBUG
+pyinstaller main.py --clean --onefile --icon icon.ico --name SteganographyApp --distpath "./" --log-level=DEBUG
 
 echo.
 echo ******************************
